@@ -234,7 +234,7 @@ export const MISSION_CATALOG: Mission[] = [
     type: 'days',
     subject: 'life',
     title: 'Haftanın Günleri',
-    description: 'Günleri sıraya koy!',
+    description: 'Günleri sıraya koy, hafta içi ve hafta sonunu öğren!',
     icon: '📅',
     difficulty: 1,
     rewardStars: 10,

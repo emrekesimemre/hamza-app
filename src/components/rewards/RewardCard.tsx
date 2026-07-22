@@ -8,6 +8,7 @@ interface RewardCardProps {
   stars: number
   onPurchase: () => void
   onActivate: () => void
+  onPreview: () => void
 }
 
 export function RewardCard({
@@ -17,6 +18,7 @@ export function RewardCard({
   stars,
   onPurchase,
   onActivate,
+  onPreview,
 }: RewardCardProps) {
   const canAfford = stars >= reward.cost
   const needed = reward.cost - stars
@@ -46,11 +48,18 @@ export function RewardCard({
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 space-y-2">
+        {!owned && (
+          <button
+            type="button"
+            onClick={onPreview}
+            className="w-full rounded-2xl bg-sky-100 py-2.5 text-sm font-bold text-sky-700 transition hover:bg-sky-200 active:scale-95"
+          >
+            👀 Nasıl Görünecek?
+          </button>
+        )}
+
         {owned ? (
-          (reward.category === 'avatar' ||
-            reward.category === 'dino-skin' ||
-            reward.category === 'item') &&
           !active ? (
             <button
               type="button"

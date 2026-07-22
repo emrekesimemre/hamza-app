@@ -1,15 +1,18 @@
-import { HAMZA_PHOTO, HAMZA_PHOTO_ALT } from '@/constants/branding'
+import { useMissionStore } from '@/store/useMissionStore'
+import { HamzaPhotoAvatar } from '@/components/common/HamzaPhotoAvatar'
 
 interface HamzaAvatarProps {
   className?: string
 }
 
 export function HamzaAvatar({ className = 'h-11 w-11' }: HamzaAvatarProps) {
+  const activeAvatar = useMissionStore((s) => s.activeAvatar)
+
   return (
-    <img
-      src={HAMZA_PHOTO}
-      alt={HAMZA_PHOTO_ALT}
-      className={`shrink-0 rounded-full object-cover object-top ring-2 ring-sky-200 ${className}`}
+    <HamzaPhotoAvatar
+      className={className}
+      accessory={activeAvatar}
+      accessoryClassName="h-[44%] w-[44%] text-[0.65em]"
     />
   )
 }

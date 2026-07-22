@@ -7,3 +7,25 @@ export interface Reward {
   cost: number
   category: RewardCategory
 }
+
+export interface RewardPurchaseLog {
+  rewardId: string
+  rewardName: string
+  icon: string
+  purchasedAt: string
+  cost: number
+}
+
+export interface SetBonusResult {
+  setId: string
+  setName: string
+  bonusStars: number
+  badgeId: string
+}
+
+export interface PurchaseRewardResult {
+  success: boolean
+  reward?: Reward
+  setBonus?: SetBonusResult
+  newBadges?: string[]
+}

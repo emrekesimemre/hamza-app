@@ -42,6 +42,60 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: '3 gün üst üste 3/3 tamamla',
     icon: '🔥',
   },
+  {
+    id: 'explorer-set',
+    name: 'Kaşif Seti',
+    description: 'Kaşif setinin tüm parçalarını topla',
+    icon: '🧭',
+  },
+  {
+    id: 'space-set',
+    name: 'Uzay Seti',
+    description: 'Uzay setinin tüm parçalarını topla',
+    icon: '🚀',
+  },
+  {
+    id: 'first-reward',
+    name: 'İlk Ödül',
+    description: 'Mağazadan ilk ödülünü al',
+    icon: '🎁',
+  },
+  {
+    id: 'hero-set',
+    name: 'Kahraman Seti',
+    description: 'Kahraman setinin tüm parçalarını topla',
+    icon: '🦸',
+  },
+  {
+    id: 'wizard-set',
+    name: 'Büyücü Seti',
+    description: 'Büyücü setinin tüm parçalarını topla',
+    icon: '🧙',
+  },
+  {
+    id: 'ninja-set',
+    name: 'Ninja Seti',
+    description: 'Ninja setinin tüm parçalarını topla',
+    icon: '🥷',
+  },
+  {
+    id: 'party-set',
+    name: 'Parti Seti',
+    description: 'Parti setinin tüm parçalarını topla',
+    icon: '🎸',
+  },
+  {
+    id: 'royal-set',
+    name: 'Kral Seti',
+    description: 'Kral setinin tüm parçalarını topla',
+    icon: '👑',
+  },
+  {
+    id: 'collector-10',
+    name: 'Koleksiyoncu',
+    description: '10 farklı ödül topla',
+    icon: '🎒',
+  },
 ]
 
 export function getAchievementById(id: string): Achievement | undefined {

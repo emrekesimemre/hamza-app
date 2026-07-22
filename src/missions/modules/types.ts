@@ -91,11 +91,26 @@ export interface PatternsQuestion {
   options: QuestionOption[]
 }
 
+export type DaysQuestionMode =
+  | 'order'
+  | 'nth'
+  | 'after'
+  | 'before'
+  | 'first'
+  | 'last'
+  | 'weekend_count'
+  | 'weekday_count'
+  | 'which_weekend'
+  | 'which_weekday'
+
 export interface DaysQuestion {
+  mode: DaysQuestionMode
   prompt: string
-  days: string[]
-  correctOrder: number[]
+  days?: string[]
+  correctOrder?: number[]
+  highlightDay?: string
   correctAnswer: number
+  options: QuestionOption[]
 }
 
 export interface CalendarTimeQuestion {

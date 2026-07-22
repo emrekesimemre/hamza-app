@@ -90,8 +90,11 @@ export function Algorithm({ mission, onComplete }: MissionModuleProps) {
     <div className="animate-bounce-in rounded-3xl bg-white p-6 shadow-xl sm:p-8">
       <div className="mb-2 text-center text-5xl">{mission.icon}</div>
       <h1 className="mb-1 text-center text-2xl font-extrabold text-gray-800">{mission.title}</h1>
-      <p className="mb-4 text-center text-sm text-gray-500">
+      <p className="mb-1 text-center text-sm text-gray-500">
         Dinozoru yeme ulaştır! Seviye {levelIndex + 1}/{LEVEL_COUNT}
+      </p>
+      <p className="mb-4 text-center text-sm font-semibold text-sky-600">
+        Hamle: {commands.length}/{level.maxCommands}
       </p>
 
       <div

@@ -30,6 +30,8 @@ export default function ParentPage() {
   const longestStreak = useMissionStore((s) => s.longestStreak)
   const stars = useMissionStore((s) => s.stars)
   const earnedBadges = useMissionStore((s) => s.earnedBadges)
+  const ownedRewards = useMissionStore((s) => s.ownedRewards)
+  const rewardPurchaseHistory = useMissionStore((s) => s.rewardPurchaseHistory)
 
   if (!verified) {
     return (
@@ -159,6 +161,33 @@ export default function ParentPage() {
           </div>
         </div>
       )}
+
+      <div className="rounded-3xl bg-white p-6 shadow-md">
+        <h3 className="mb-3 font-bold text-gray-700">Ödül Koleksiyonu</h3>
+        <p className="mb-3 text-sm text-gray-500">
+          {childName} toplam <strong>{ownedRewards.length}</strong> ödül sahibi
+        </p>
+        {rewardPurchaseHistory.length > 0 ? (
+          <div className="space-y-2">
+            {rewardPurchaseHistory.slice(0, 3).map((purchase, i) => (
+              <div
+                key={`${purchase.rewardId}-${purchase.purchasedAt}-${i}`}
+                className="flex items-center gap-3 rounded-xl bg-purple-50 px-3 py-2"
+              >
+                <span className="text-2xl">{purchase.icon}</span>
+                <span className="flex-1 text-sm font-semibold text-gray-700">
+                  {purchase.rewardName}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {new Date(purchase.purchasedAt).toLocaleDateString('tr-TR')}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400">Henüz ödül alınmamış.</p>
+        )}
+      </div>
 
       <div className="rounded-3xl bg-white p-6 shadow-md space-y-4">
         <h3 className="font-bold text-gray-700">Ayarlar</h3>

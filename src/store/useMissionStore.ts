@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { DAILY_MISSION_COUNT, BONUS_TRIO_STARS } from '@/constants/dailyRotation'
 import { shouldClaimBonusTrio, shouldIncrementBonusCount } from '@/missions/engine/hybridMissionLogic'
 import { REWARDS_CATALOG } from '@/constants/rewards'
+import { getCompletedSets } from '@/constants/rewardSets'
 import { checkNewAchievements } from '@/constants/achievements'
 import { getMissionById } from '@/missions/catalog/missionCatalog'
 import { adjustDifficulty, createDefaultDifficultyMap } from '@/missions/engine/difficultyEngine'
@@ -16,6 +17,7 @@ import type {
   RecentMissionEntry,
 } from '@/missions/types/mission.types'
 import type { ProgressLog } from '@/types/progress.types'
+import type { PurchaseRewardResult, RewardPurchaseLog, SetBonusResult } from '@/types/rewards.types'
 import { getTodayISO, daysBetween } from '@/utils/date'
 import { STORAGE_KEY } from '@/utils/storage'
 import { DEFAULT_DAILY_TIME_LIMIT_SECONDS } from '@/utils/timer'
@@ -43,6 +45,8 @@ interface MissionStoreState {
   activeAvatar: string | null
   activeDinoSkin: string | null
   activeItem: string | null
+  rewardPurchaseHistory: RewardPurchaseLog[]
+  claimedSetBonuses: string[]
   soundEnabled: boolean
   onboardingCompleted: boolean
   parentPinHash: string | null
@@ -83,7 +87,8 @@ interface MissionStoreActions {
   tickActiveSeconds: (seconds: number) => void
   setTimeLimitReached: (reached: boolean) => void
   completeOnboarding: () => void
-  purchaseReward: (rewardId: string) => boolean
+  purchaseReward: (rewardId: string) => PurchaseRewardResult
+  activateReward: (rewardId: string) => void
   setActiveAvatar: (rewardId: string) => void
   setActiveDinoSkin: (rewardId: string) => void
   setActiveItem: (rewardId: string) => void
@@ -119,6 +124,8 @@ const initialState: MissionStoreState = {
   activeAvatar: null,
   activeDinoSkin: null,
   activeItem: null,
+  rewardPurchaseHistory: [],
+  claimedSetBonuses: [],
   soundEnabled: true,
   onboardingCompleted: false,
   parentPinHash: null,
@@ -506,13 +513,77 @@ export const useMissionStore = create<MissionStore>()(
 
       purchaseReward: (rewardId) => {
         const reward = REWARDS_CATALOG.find((r) => r.id === rewardId)
-        if (!reward) return false
-        const { ownedRewards } = get()
-        if (ownedRewards.includes(rewardId)) return false
-        if (!get().spendStars(reward.cost)) return false
+        if (!reward) return { success: false }
 
-        set((s) => ({ ownedRewards: [...s.ownedRewards, rewardId] }))
-        return true
+        const { ownedRewards, earnedBadges } = get()
+        if (ownedRewards.includes(rewardId)) return { success: false }
+        if (!get().spendStars(reward.cost)) return { success: false }
+
+        const purchaseLog: RewardPurchaseLog = {
+          rewardId: reward.id,
+          rewardName: reward.name,
+          icon: reward.icon,
+          purchasedAt: new Date().toISOString(),
+          cost: reward.cost,
+        }
+
+        set((s) => ({
+          ownedRewards: [...s.ownedRewards, rewardId],
+          rewardPurchaseHistory: [purchaseLog, ...s.rewardPurchaseHistory].slice(0, 50),
+        }))
+
+        const newBadges: string[] = []
+        if (!earnedBadges.includes('first-reward')) {
+          newBadges.push('first-reward')
+          set((s) => ({ earnedBadges: [...s.earnedBadges, 'first-reward'] }))
+        }
+
+        const setBonus = (() => {
+          const { ownedRewards, claimedSetBonuses } = get()
+          const completed = getCompletedSets(ownedRewards, claimedSetBonuses)
+          if (completed.length === 0) return undefined
+
+          const rewardSet = completed[0]
+          get().addStars(rewardSet.bonusStars)
+          set((s) => ({ claimedSetBonuses: [...s.claimedSetBonuses, rewardSet.id] }))
+
+          return {
+            setId: rewardSet.id,
+            setName: rewardSet.name,
+            bonusStars: rewardSet.bonusStars,
+            badgeId: rewardSet.badgeId,
+          } satisfies SetBonusResult
+        })()
+
+        if (setBonus?.badgeId && !get().earnedBadges.includes(setBonus.badgeId)) {
+          newBadges.push(setBonus.badgeId)
+          set((s) => ({ earnedBadges: [...s.earnedBadges, setBonus.badgeId] }))
+        }
+
+        if (get().ownedRewards.length >= 10 && !get().earnedBadges.includes('collector-10')) {
+          newBadges.push('collector-10')
+          set((s) => ({ earnedBadges: [...s.earnedBadges, 'collector-10'] }))
+        }
+
+        playSound('complete')
+
+        return {
+          success: true,
+          reward,
+          setBonus,
+          newBadges: newBadges.length > 0 ? newBadges : undefined,
+        }
+      },
+
+      activateReward: (rewardId) => {
+        const reward = REWARDS_CATALOG.find((r) => r.id === rewardId)
+        if (!reward) return
+        const { ownedRewards } = get()
+        if (!ownedRewards.includes(rewardId)) return
+
+        if (reward.category === 'avatar') get().setActiveAvatar(rewardId)
+        if (reward.category === 'dino-skin') get().setActiveDinoSkin(rewardId)
+        if (reward.category === 'item') get().setActiveItem(rewardId)
       },
 
       setActiveAvatar: (rewardId) => {
@@ -575,6 +646,8 @@ export const useMissionStore = create<MissionStore>()(
         activeAvatar: state.activeAvatar,
         activeDinoSkin: state.activeDinoSkin,
         activeItem: state.activeItem,
+        rewardPurchaseHistory: state.rewardPurchaseHistory,
+        claimedSetBonuses: state.claimedSetBonuses,
         soundEnabled: state.soundEnabled,
         onboardingCompleted: state.onboardingCompleted,
         parentPinHash: state.parentPinHash,

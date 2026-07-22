@@ -3,6 +3,7 @@ import AppLayout from '@/pages/layout'
 import DashboardPage from '@/pages/index'
 import MissionPage from '@/pages/mission/MissionPage'
 import RewardsPage from '@/pages/rewards'
+import CollectionPage from '@/pages/collection'
 import ParentPage from '@/pages/parent/index'
 import ParentProgressPage from '@/pages/parent/progress'
 
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/mission/:missionId" element={<MissionPage />} />
           <Route path="/rewards" element={<RewardsPage />} />
+          <Route path="/collection" element={<CollectionPage />} />
           <Route path="/parent" element={<ParentPage />} />
           <Route path="/parent/progress" element={<ParentProgressPage />} />
         </Route>

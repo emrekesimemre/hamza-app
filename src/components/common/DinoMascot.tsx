@@ -27,13 +27,21 @@ const MESSAGES: Record<MascotMood, string[]> = {
 
 export function DinoMascot({ mood = 'idle' }: DinoMascotProps) {
   const activeDinoSkin = useMissionStore((s) => s.activeDinoSkin)
+  const activeItem = useMissionStore((s) => s.activeItem)
   const dino = activeDinoSkin ?? DEFAULT_DINO
   const messages = MESSAGES[mood]
   const message = messages[Math.floor(Date.now() / 10000) % messages.length]
 
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-sky-50 px-4 py-3">
-      <span className="animate-bounce-in text-4xl">{dino}</span>
+      <div className="relative shrink-0">
+        <span className="animate-bounce-in text-4xl">{dino}</span>
+        {activeItem && (
+          <span className="absolute -bottom-1 -right-2 text-xl" title="Eşya">
+            {activeItem}
+          </span>
+        )}
+      </div>
       <p className="text-sm font-semibold text-sky-800">{message}</p>
     </div>
   )

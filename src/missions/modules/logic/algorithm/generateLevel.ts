@@ -52,22 +52,21 @@ export function generateAlgorithmLevel(levelIndex: number): AlgorithmLevel {
       ],
       start: { row: 0, col: 0 },
       goal: { row: 2, col: 2 },
-      maxCommands: 5,
+      maxCommands: 6,
     }
   }
 
   return {
-    gridSize: 5,
+    gridSize: 4,
     grid: [
-      ['start', 'empty', 'empty', 'wall', 'empty'],
-      ['wall', 'empty', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'wall', 'empty', 'empty'],
-      ['empty', 'wall', 'empty', 'empty', 'empty'],
-      ['empty', 'empty', 'empty', 'wall', 'goal'],
+      ['start', 'empty', 'empty', 'empty'],
+      ['wall', 'empty', 'empty', 'empty'],
+      ['empty', 'empty', 'wall', 'empty'],
+      ['empty', 'empty', 'empty', 'goal'],
     ],
     start: { row: 0, col: 0 },
-    goal: { row: 4, col: 4 },
-    maxCommands: 5,
+    goal: { row: 3, col: 3 },
+    maxCommands: 8,
   }
 }
 

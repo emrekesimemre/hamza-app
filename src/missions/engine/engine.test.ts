@@ -72,6 +72,48 @@ describe('algorithm level', () => {
     const valid = validatePath(level, ['left'])
     expect(valid).toBe(false)
   })
+
+  it('gives enough commands to reach the goal on every level', () => {
+    const deltas = { up: [1, 0], right: [0, 1], left: [0, -1] } as const
+
+    for (let levelIndex = 0; levelIndex < 3; levelIndex++) {
+      const level = generateAlgorithmLevel(levelIndex)
+      const { gridSize, grid, start, goal, maxCommands } = level
+      const queue: Array<{ row: number; col: number; dist: number }> = [
+        { row: start.row, col: start.col, dist: 0 },
+      ]
+      const seen = new Set([`${start.row},${start.col}`])
+      let shortest = Infinity
+
+      while (queue.length > 0) {
+        const current = queue.shift()!
+        if (current.row === goal.row && current.col === goal.col) {
+          shortest = current.dist
+          break
+        }
+
+        for (const delta of Object.values(deltas)) {
+          const next = { row: current.row + delta[0], col: current.col + delta[1] }
+          const key = `${next.row},${next.col}`
+          if (
+            next.row < 0 ||
+            next.col < 0 ||
+            next.row >= gridSize ||
+            next.col >= gridSize ||
+            grid[next.row][next.col] === 'wall' ||
+            seen.has(key)
+          ) {
+            continue
+          }
+
+          seen.add(key)
+          queue.push({ ...next, dist: current.dist + 1 })
+        }
+      }
+
+      expect(shortest).toBeLessThanOrEqual(maxCommands)
+    }
+  })
 })
 
 describe('validateDayOrder', () => {

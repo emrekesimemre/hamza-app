@@ -11,6 +11,7 @@ import { MissionCard } from '@/components/missions/MissionCard'
 import { OnboardingModal } from '@/components/common/OnboardingModal'
 import { StarCounter } from '@/components/layout/StarCounter'
 import { DinoMascot, StreakBadge } from '@/components/common/DinoMascot'
+import { CharacterPreview } from '@/components/rewards/CharacterPreview'
 import { TodaySubjects } from '@/components/layout/TodaySubjects'
 
 export default function DashboardPage() {
@@ -72,6 +73,8 @@ export default function DashboardPage() {
 
         <DinoMascot mood={mascotMood} />
 
+        <CharacterPreview size="sm" />
+
         <section className="rounded-3xl bg-amber-50/80 p-4 ring-1 ring-amber-200">
           <h2 className="mb-1 text-center text-lg font-extrabold text-amber-900">
             Bugünün Bonus Maceraları
@@ -130,6 +133,12 @@ export default function DashboardPage() {
             className="block rounded-2xl bg-purple-100 py-4 text-center text-lg font-bold text-purple-700 transition hover:bg-purple-200 active:scale-95"
           >
             ⭐ Ödül Mağazası
+          </Link>
+          <Link
+            to="/collection"
+            className="block rounded-2xl bg-purple-50 py-3 text-center text-base font-bold text-purple-600 transition hover:bg-purple-100 active:scale-95"
+          >
+            🎒 Koleksiyonum
           </Link>
           <Link
             to="/parent"
