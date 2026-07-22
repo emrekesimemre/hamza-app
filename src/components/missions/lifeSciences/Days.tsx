@@ -30,7 +30,7 @@ function DaysOrderRound({
 
   const days = question.days ?? []
 
-  const lastFilledSlotIndex = orderSlots.reduce(
+  const lastFilledSlotIndex = orderSlots.reduce<number>(
     (last, slot, index) => (slot !== null ? index : last),
     -1,
   )
